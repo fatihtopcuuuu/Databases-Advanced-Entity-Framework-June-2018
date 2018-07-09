@@ -13,11 +13,11 @@ During the course a practical team project will be developed that includes pract
 
 ## Exercises.
 1. <a href=""> Exercise: Introduction to EntityFramework </a> 
-2. <a href="" Exercise: Code-First </a> 
-3. <a href="" Exercise: Entity Relations </a> 
-4. <a href="" Exercise: Advanced Relations  </a>
-5. <a href="" Exercise: Advanced Querying </a>
-6. <a href="" Exercise: Auto Mapping Objects</a>
-7. <a href="" Exercise: Best Practices and Architecture</a>
-8. <a href="" Exercise: XML Processing </a>
-9. <a href="" Exercise: JSON Processing</a>
+2. <a href=""> Exercise: Code-First </a> 
+3. <a href=""> Exercise: Entity Relations </a> 
+4. <a href=""> Exercise: Advanced Relations  </a>
+5. <a href=""> Exercise: Advanced Querying </a>
+6. <a href=""> Exercise: Auto Mapping Objects</a>
+7. <a href=""> Exercise: Best Practices and Architecture</a>
+8. <a href=""> Exercise: XML Processing </a>
+9. <a href=""> Exercise: JSON Processing</a>
