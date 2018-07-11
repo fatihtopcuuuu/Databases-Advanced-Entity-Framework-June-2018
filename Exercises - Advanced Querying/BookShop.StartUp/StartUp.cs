@@ -1,13 +1,12 @@
-﻿namespace BookShop.StartUp
+﻿namespace BookShop
 {
-    using Data;
-    using Initializer;
-    using Models;
-    using Models.Enums;
     using System;
     using System.Globalization;
     using System.Linq;
     using System.Text;
+    using Data;
+    using Models;
+    using Models.Enums;
 
     public class StartUp
     {
@@ -15,18 +14,18 @@
         {
             //NOTE: The methods should be public in order to get the maximum points in judge
 
-            //var command = Console.ReadLine().ToLower();
+            var command = Console.ReadLine().ToLower();
             //var year = int.Parse(Console.ReadLine());
             //var length = int.Parse(Console.ReadLine());
 
             using (var db = new BookShopContext())
             {
-                DbInitializer.ResetDatabase(db);
+                //DbInitializer.ResetDatabase(db); DO NOT SUBMIT THIS IN JUDGE OR YOU WILL GET COMPILE TIME ERROR
                 Console.Write(GetMostRecentBooks(db));
             }
         }
 
-        private static string GetBooksByAgeRestriction(BookShopContext context, string command)
+        public static string GetBooksByAgeRestriction(BookShopContext context, string command)
         {
             var sb = new StringBuilder();
 
@@ -43,12 +42,12 @@
             return sb.ToString();
         }
 
-        private static string CapitalizeCommand(string command)
+        public static string CapitalizeCommand(string command)
         {
             return char.ToUpper(command[0]) + command.Substring(1);
         }
 
-        private static string GetGoldenBooks(BookShopContext context)
+        public static string GetGoldenBooks(BookShopContext context)
         {
             var sb = new StringBuilder();
 
@@ -63,7 +62,7 @@
             return sb.ToString();
         }
 
-        private static string GetBooksByPrice(BookShopContext context)
+        public static string GetBooksByPrice(BookShopContext context)
         {
             var sb = new StringBuilder();
 
@@ -82,7 +81,7 @@
             return sb.ToString();
         }
 
-        private static string GetBooksNotRealeasedIn(BookShopContext context, int year)
+        public static string GetBooksNotRealeasedIn(BookShopContext context, int year)
         {
             var sb = new StringBuilder();
 
@@ -97,7 +96,7 @@
             return sb.ToString();
         }
 
-        private static string GetBooksByCategory(BookShopContext context, string input)
+        public static string GetBooksByCategory(BookShopContext context, string input)
         {
             var sb = new StringBuilder();
 
@@ -107,16 +106,16 @@
             context
                 .Books
                 .Where(b => b.BookCategories
-                    .Any(c => categories.Contains(c.Category.Name)))
+                    .Any(c => categories.Contains(c.Category.Name.ToLower())))
                 .Select(b => b.Title)
                 .OrderBy(t => t)
                 .ToList()
-                .ForEach(t => sb.AppendLine(t));
+                .ForEach(b => sb.AppendLine(b));
 
             return sb.ToString();
         }
 
-        private static string GetBooksReleasedBefore(BookShopContext context, string date)
+        public static string GetBooksReleasedBefore(BookShopContext context, string date)
         {
             var sb = new StringBuilder();
 
@@ -136,7 +135,7 @@
             return sb.ToString();
         }
 
-        private static string GetAuthorNamesEndingIn(BookShopContext context, string input)
+        public static string GetAuthorNamesEndingIn(BookShopContext context, string input)
         {
             var sb = new StringBuilder();
 
@@ -153,7 +152,7 @@
             return sb.ToString();
         }
 
-        private static string GetBookTitlesContaining(BookShopContext context, string input)
+        public static string GetBookTitlesContaining(BookShopContext context, string input)
         {
             var sb = new StringBuilder();
 
@@ -168,7 +167,7 @@
             return sb.ToString();
         }
 
-        private static string GetBooksByAuthor(BookShopContext context, string input)
+        public static string GetBooksByAuthor(BookShopContext context, string input)
         {
             var sb = new StringBuilder();
 
@@ -187,7 +186,7 @@
             return sb.ToString();
         }
 
-        private static string CountBooks(BookShopContext context, int lengthCheck)
+        public static string CountBooks(BookShopContext context, int lengthCheck)
         {
             var booksCounts = context
                 .Books
@@ -198,7 +197,7 @@
             return result;
         }
 
-        private static string CountCopiesByAuthor(BookShopContext context)
+        public static string CountCopiesByAuthor(BookShopContext context)
         {
             var sb = new StringBuilder();
 
@@ -218,7 +217,7 @@
             return sb.ToString();
         }
 
-        private static string GetTotalProfitByCategory(BookShopContext context)
+        public static string GetTotalProfitByCategory(BookShopContext context)
         {
             var sb = new StringBuilder();
 
@@ -237,7 +236,7 @@
             return sb.ToString();
         }
 
-        private static string GetMostRecentBooks(BookShopContext context)
+        public static string GetMostRecentBooks(BookShopContext context)
         {
             var categories = context
                 .Categories
@@ -261,7 +260,7 @@
                                  .Select(y => $"{y.Title} ({y.ReleaseDate.Value.Year})"))));
         }
 
-        private static void IncreasePrices(BookShopContext context)
+        public static void IncreasePrices(BookShopContext context)
         {
             context
                 .Books
@@ -272,7 +271,7 @@
             context.SaveChanges();
         }
 
-        private static string RemoveBooks(BookShopContext context)
+        public static string RemoveBooks(BookShopContext context)
         {
             var booksToDelete = context
                 .Books
