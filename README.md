@@ -1,5 +1,5 @@
  *<p align="center"> Databases-Advanced-Entity-Framework-June-2018<p>
-<a href="https://softuni.bg/trainings/1843/csharp-oop-advanced-march-2018">  ![SoftUni logo][logo] <a/>
+<a href="https://softuni.bg/trainings/1972/databases-advanced-entity-framework-june-2018">  ![SoftUni logo][logo] <a/>
 
 [logo]: http://innovationstarterbox.bg/wp-content/uploads/2016/05/Softuni_logo_trasparent.png "Logo Title Text 2"
 
@@ -12,12 +12,11 @@ We will look at details with a modern ORM technology: the Entity Framework (EF),
 During the course a practical team project will be developed that includes practical use of different DB servers (SQL Server, MySQL), data access platforms and technologies (ADO.NET, Entity Framework, etc.) and import and export to different data formats (JSON, XML).
 
 ## Exercises.
-1. <a href=""> Exercise: Introduction to EntityFramework </a> 
-2. <a href=""> Exercise: Code-First </a> 
-3. <a href=""> Exercise: Entity Relations </a> 
-4. <a href=""> Exercise: Advanced Relations  </a>
-5. <a href=""> Exercise: Advanced Querying </a>
-6. <a href=""> Exercise: Auto Mapping Objects</a>
-7. <a href=""> Exercise: Best Practices and Architecture</a>
-8. <a href=""> Exercise: XML Processing </a>
-9. <a href=""> Exercise: JSON Processing</a>
+1. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20Introduction%20to%20Entity%20Framework"> Exercise: Introduction to EntityFramework </a> 
+2. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20Code%20First"> Exercise: Code-First </a> 
+3. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20Entity%20Relations"> Exercise: Entity Relations </a> 
+4. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20Advanced%20Relations"> Exercise: Advanced Relations  </a>
+5. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20Advanced%20Querying"> Exercise: Advanced Querying </a>
+6. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20External%20Format%20Processing"> Exercise: XML Processing </a>
+7. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20External%20Format%20Processing"> Exercise: JSON Processing</a>
+8. <a href=""> Practical Exam</a>
