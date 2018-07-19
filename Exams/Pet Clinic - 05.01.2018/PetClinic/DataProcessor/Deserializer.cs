@@ -1,236 +1,186 @@
 ﻿namespace PetClinic.DataProcessor
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Globalization;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
+    using System.Xml.Serialization;
     using AutoMapper;
     using Data;
     using Dtos.Import;
     using Models;
     using Newtonsoft.Json;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.Globalization;
-    using System.Linq;
-    using System.Text;
-    using System.Xml.Linq;
     using ValidationContext = System.ComponentModel.DataAnnotations.ValidationContext;
 
     public class Deserializer
     {
-        private const string FailureMessage = "Error: Invalid data.";
-        private const string SuccessMessage = "Record {0} successfully imported.";
-
         public static string ImportAnimalAids(PetClinicContext context, string jsonString)
         {
-            var animalAids = JsonConvert.DeserializeObject<AnimalAid[]>(jsonString);
-
-            var validEntries = new List<AnimalAid>();
-
             var sb = new StringBuilder();
 
-            foreach (var aa in animalAids)
+            var deserializedAnimalAids = JsonConvert.DeserializeObject<AnimalAid[]>(jsonString);
+
+            var validAnimalAids = new List<AnimalAid>();
+            foreach (var animalAid in deserializedAnimalAids)
             {
-                var isValid = IsValid(aa);
-
-                var alreadyExists = validEntries.Any(a => a.Name == aa.Name);
-
-                if (!isValid || alreadyExists)
+                bool exists = validAnimalAids.Any(a => a.Name == animalAid.Name);
+                if (IsValid(animalAid) && !exists)
                 {
-                    sb.AppendLine(FailureMessage);
-                    continue;
+                    sb.AppendLine($"Record {animalAid.Name} successfully imported.");
+                    validAnimalAids.Add(animalAid);
                 }
-
-                validEntries.Add(aa);
-                sb.AppendLine(string.Format(SuccessMessage, aa.Name));
+                else
+                {
+                    sb.AppendLine("Error: Invalid data.");
+                }
             }
 
-            context.AnimalAids.AddRange(validEntries);
+            context.AnimalAids.AddRange(validAnimalAids);
             context.SaveChanges();
 
-            var result = sb.ToString().TrimEnd();
-
-            return result;
+            return sb.ToString();
         }
 
         public static string ImportAnimals(PetClinicContext context, string jsonString)
         {
-            var animals = JsonConvert.DeserializeObject<AnimalDto[]>(jsonString);
-
             var sb = new StringBuilder();
-            var validEntries = new List<Animal>();
 
-            foreach (var dto in animals)
+            var deserializedAnimals = JsonConvert.DeserializeObject<AnimalDto[]>(jsonString);
+
+            var validAnimals = new List<Animal>();
+            foreach (var animalDto in deserializedAnimals)
             {
-                var animal = Mapper.Map<Animal>(dto);
-
-                var animalIsValid = IsValid(animal);
-                var passportIsValid = IsValid(animal.Passport);
-
-                var alreadyExists = validEntries.Any(a => a.Passport.SerialNumber == animal.Passport.SerialNumber);
-
-                if (!animalIsValid || !passportIsValid || alreadyExists)
+                bool passportExists = validAnimals.Any(a => a.PassportSerialNumber == animalDto.Passport.SerialNumber);
+                if (!IsValid(animalDto) || !IsValid(animalDto.Passport) || passportExists)
                 {
-                    sb.AppendLine(FailureMessage);
+                    sb.AppendLine("Error: Invalid data.");
                     continue;
                 }
 
-                validEntries.Add(animal);
-                sb.AppendLine(string.Format(SuccessMessage, $"{animal.Name} Passport №: {animal.Passport.SerialNumber}"));
+                var animal = Mapper.Map<Animal>(animalDto);
+
+                validAnimals.Add(animal);
+
+                sb.AppendLine($"Record {animal.Name} Passport №: {animal.PassportSerialNumber} successfully imported.");
             }
 
-            context.Animals.AddRange(validEntries);
+            context.Animals.AddRange(validAnimals);
             context.SaveChanges();
 
-            var result = sb.ToString().TrimEnd();
-            return result;
+            return sb.ToString();
         }
 
         public static string ImportVets(PetClinicContext context, string xmlString)
         {
-            var xDoc = XDocument.Parse(xmlString);
-            var elements = xDoc.Root.Elements();
-
             var sb = new StringBuilder();
-            var validEntries = new List<Vet>();
 
-            foreach (var el in elements)
+            var serialize = new XmlSerializer(typeof(VetDto[]), new XmlRootAttribute("Vets"));
+            var vets = (VetDto[])serialize.Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(xmlString)));
+
+            var validVets = new List<Vet>();
+            foreach (var vetDto in vets)
             {
-                var name = el.Element("Name")?.Value;
-                var profession = el.Element("Profession")?.Value;
-                var ageString = el.Element("Age")?.Value;
-                var phoneNumber = el.Element("PhoneNumber")?.Value;
-                
-                var age = 0;
-
-                if (ageString != null)
+                if (!IsValid(vetDto)
+                    || validVets.Any(v => v.PhoneNumber == vetDto.PhoneNumber))
                 {
-                    age = int.Parse(ageString);
-                }
-
-                var vet = new Vet
-                {
-                    Name = name,
-                    Profession = profession,
-                    Age = age,
-                    PhoneNumber = phoneNumber
-                };
-
-                var isValid = IsValid(vet);
-                var phoneNumberExists = validEntries.Any(v => v.PhoneNumber == vet.PhoneNumber);
-
-                if (!isValid || phoneNumberExists)
-                {
-                    sb.AppendLine(FailureMessage);
+                    sb.AppendLine("Error: Invalid data.");
                     continue;
                 }
 
-                validEntries.Add(vet);
-                sb.AppendLine(string.Format(SuccessMessage, vet.Name));
+                var vet = Mapper.Map<Vet>(vetDto);
+
+                validVets.Add(vet);
+
+                sb.AppendLine($"Record {vet.Name} successfully imported.");
             }
 
-            context.Vets.AddRange(validEntries);
+            context.Vets.AddRange(validVets);
             context.SaveChanges();
 
-            var result = sb.ToString().TrimEnd();
-            return result;
+            return sb.ToString();
         }
 
         public static string ImportProcedures(PetClinicContext context, string xmlString)
         {
-            var xDoc = XDocument.Parse(xmlString);
-            var elements = xDoc.Root.Elements();
-
             var sb = new StringBuilder();
-            var validEntries = new List<Procedure>();
 
-            foreach (var el in elements)
+            var serialize = new XmlSerializer(typeof(ProcedureDto[]), new XmlRootAttribute("Procedures"));
+            var procedures = (ProcedureDto[])serialize.Deserialize(new MemoryStream(Encoding.UTF8.GetBytes(xmlString)));
+
+            var validProcedures = new List<Procedure>();
+            foreach (var procedureDto in procedures)
             {
-                var vetName = el.Element("Vet")?.Value;
-                var passportId = el.Element("Animal")?.Value;
-                var dateTimeString = el.Element("DateTime")?.Value;
-
-                var vetId = context.Vets.SingleOrDefault(v => v.Name == vetName)?.Id;
-                var passportExists = context.Passports.Any(p => p.SerialNumber == passportId);
-
-                var dateIsValid = DateTime
-                    .TryParseExact(dateTimeString, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var dateTime);
-
-                var animalAidElements = el.Element("AnimalAids")?.Elements();
-
-                if (vetId == null || !passportExists || animalAidElements == null || !dateIsValid)
+                if (!IsValid(procedureDto))
                 {
-                    sb.AppendLine(FailureMessage);
+                    sb.AppendLine("Error: Invalid data.");
                     continue;
                 }
 
-                var animalAidIds = new List<int>();
-                var allAidsExist = true;
+                var vet = context
+                    .Vets
+                    .SingleOrDefault(v => v.Name == procedureDto.Vet);
 
-                foreach (var aid in animalAidElements)
+                var animal = context
+                    .Animals
+                    .SingleOrDefault(a => a.PassportSerialNumber == procedureDto.Animal);
+
+                var dateTime = DateTime.ParseExact(procedureDto.DateTime,
+                    "dd-MM-yyyy", CultureInfo.InvariantCulture);
+
+                bool animalAidsInvalid = false;
+
+                var procedureAnimalAids = new List<ProcedureAnimalAid>();
+                foreach (var animalAidDto in procedureDto.AnimalAids)
                 {
-                    var aidName = aid.Element("Name")?.Value;
+                    var animalAid = context
+                        .AnimalAids
+                        .SingleOrDefault(a => a.Name == animalAidDto.Name);
 
-                    var aidId = context.AnimalAids.SingleOrDefault(a => a.Name == aidName)?.Id;
-
-                    if (aidId == null || animalAidIds.Any(id => id == aidId))
+                    if (animalAid == null
+                        || procedureAnimalAids.Any(p => p.AnimalAid == animalAid))
                     {
-                        allAidsExist = false;
+                        animalAidsInvalid = true;
                         break;
                     }
 
-                    animalAidIds.Add(aidId.Value);
+                    var procedureAnimalAid = new ProcedureAnimalAid
+                    {
+                        AnimalAid = animalAid
+                    };
+
+                    procedureAnimalAids.Add(procedureAnimalAid);
                 }
 
-                if (!allAidsExist)
+                if (vet == null || animal == null || animalAidsInvalid)
                 {
-                    sb.AppendLine(FailureMessage);
+                    sb.AppendLine("Error: Invalid data.");
                     continue;
                 }
 
                 var procedure = new Procedure
                 {
-                    VetId = vetId.Value,
-                    AnimalId = context.Animals.Single(a => a.PassportSerialNumber == passportId).Id,
-                    DateTime = dateTime
+                    Animal = animal,
+                    DateTime = dateTime,
+                    Vet = vet,
+                    ProcedureAnimalAids = procedureAnimalAids
                 };
 
-                foreach (var id in animalAidIds)
-                {
-                    var mapping = new ProcedureAnimalAid
-                    {
-                        Procedure = procedure,
-                        AnimalAidId = id
-                    };
-
-                    procedure.ProcedureAnimalAids.Add(mapping);
-                }
-
-                var isValid = IsValid(procedure);
-
-                if (!isValid)
-                {
-                    sb.AppendLine(FailureMessage);
-                    continue;
-                }
-
-                validEntries.Add(procedure);
+                validProcedures.Add(procedure);
                 sb.AppendLine("Record successfully imported.");
             }
 
-            context.Procedures.AddRange(validEntries);
+            context.Procedures.AddRange(validProcedures);
             context.SaveChanges();
 
-            var result = sb.ToString().TrimEnd();
-            return result;
+            return sb.ToString();
         }
 
         private static bool IsValid(object obj)
         {
-            var validationContext = new ValidationContext(obj);
-            var validationResults = new List<ValidationResult>();
-
-            var isValid = Validator.TryValidateObject(obj, validationContext, validationResults, true);
-
-            return isValid;
+            return Validator.TryValidateObject(obj, new ValidationContext(obj), new List<ValidationResult>(), true);
         }
     }
 }

@@ -29,7 +29,7 @@
 
         private static void ImportEntities(PetClinicContext context, string baseDir = @"..\../../../Datasets\")
         {
-            const string exportDir = "./../../../Results/";
+            const string exportDir = "./../../../App/Results/";
 
             string animalAids = Deserializer.ImportAnimalAids(context, File.ReadAllText(baseDir + "animalAids.json"));
             PrintAndExportEntityToFile(animalAids, exportDir + "AnimalAidsImport.txt");
@@ -46,7 +46,7 @@
 
         private static void ExportEntities(PetClinicContext context)
         {
-            const string exportDir = "./../../../Results/";
+            const string exportDir = "./../../../App/Results/";
 
             string animalsExport = Serializer.ExportAnimalsByOwnerPhoneNumber(context, "0887446123");
             PrintAndExportEntityToFile(animalsExport, exportDir + "AnimalsExport.json");

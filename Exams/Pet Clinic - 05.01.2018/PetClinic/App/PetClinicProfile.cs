@@ -17,6 +17,8 @@
                 .ForMember(p => p.RegistrationDate,
                     rd => rd.MapFrom(dto =>
                          DateTime.ParseExact(dto.RegistrationDate, "dd-MM-yyyy", CultureInfo.InvariantCulture)));
+
+            CreateMap<VetDto, Vet>();
         }
     }
 }
