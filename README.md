@@ -20,4 +20,3 @@ During the course a practical team project will be developed that includes pract
 6. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20External%20Format%20Processing"> Exercise: XML Processing </a>
 7. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20External%20Format%20Processing"> Exercise: JSON Processing</a>
 8. <a href=""> Practical Exam</a>
-
