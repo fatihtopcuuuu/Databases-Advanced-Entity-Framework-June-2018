@@ -19,4 +19,4 @@ During the course a practical team project will be developed that includes pract
 5. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20Advanced%20Querying"> Exercise: Advanced Querying </a>
 6. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20External%20Format%20Processing"> Exercise: XML Processing </a>
 7. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exercises%20-%20External%20Format%20Processing"> Exercise: JSON Processing</a>
-8. <a href=""> Practical Exam</a>
+8. <a href="https://github.com/melikpehlivanov/Databases-Advanced-Entity-Framework-June-2018/tree/master/Exams/RealExam%20-%20SoftJail%20-%2012.08.2018"> Practical Exam</a>
